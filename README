@@ -1,0 +1,36 @@
+afmreprap	
+	This, together with Meshlab (http://meshlab.sourceforge.net/), can be used to scale data from an Atomic Force Microscope (http://en.wikipedia.org/wiki/Atomic_force_microscopy) and convert it into an .stl file to print.
+The basic process works by running a small script to scale the AFM data and convert it into a .obj point cloud, and use Meshlab to mesh it, then export it to an .stl file.
+
+The data should be in the form of x, y, and z points like so:
+x;y;z
+x;y;z
+É
+
+Also, it assumes the x and the y scales are approximately the same, as they are scaled together (the z as such can be drastically different).
+
+It can have exponentials in the form of decimaleexponent (ex. 1.432e-003).
+It could be fairly easily be modified to deal with other formats.
+
+How to use:
+	Install meshlab.
+	Put the .cpp and .h files in the directory with the data.  Run that with some c++ compiler.  
+On a mac, open the terminal, cd into the directory*, and run:
+g++ -o format formtest.cpp
+./format
+	Then, it will prompt the filename to read and to be read to.  Enter them.  The filename to be read to should have a .obj extension (ex. output.obj).
+After that, it will prompt the dimensions that it should be cut up into.  This isn't implemented right now.  Hopefully it will be soon.  Then, enter the x and y scale in whatever values you want the .stl file to be.  Do the same for the z.  At this point, the data will be read into the .obj file.  Open it with meshlab.  The last line of the command prompt are for after you attempt to mesh it.  If the mesh is not satisfactory, run it again with different scaling/cutting.  This is to allow you to avoid imputing the filenames again.  
+	The directions in meshlab roughly parallel those in the blogpost here: http://meshlabstuff.blogspot.com/2009/09/meshing-point-clouds.html
+Some of the steps (the sampling, etc.) may not be necessary depending on the data.
+	Here are simpler directions:
+	  -Click on filters, then hover over point set, and click compute normals for a point set.  Then click apply.  To see the normals, 
+go to render, show vertex normals.
+	  -Click on filters, then hover over point set, and click on Poisson Surface Reconstruction.  If you want more precision, but longer running time, increase the octree depth (up to 10).
+	  -Then, if there are way too many triangles, click on filters, hover over remeshing and click on Quadric edge collapse simplification.  	  -Finally, if the mesh is acceptable, go to file, export mesh as.  Choose the file type you want to export to, and name it what you want it to be named.  If it is not, then go back to terminal, type in 0, and try different scaling values.
+
+
+Random notes:
+	-Sometimes if the bottom of the object is close to dips in the surface.  This can screw up the surface reconstruction.  Try removing the bottom of the object, and run it again.  To do this, go to the .cpp file, and before line 219 (out << "v" << "  " << x << "    " << y << "    " << 0 << end;) insert //.  
+	-Meshlab is a bit rough, but pretty awesome.  Again, there website is: http://meshlab.sourceforge.net/
+	-This is associated with the penn state reprap group: http://reprap.org/wiki/RUG/Pennsylvania/State_College
+yay!
